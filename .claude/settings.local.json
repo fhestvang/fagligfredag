@@ -20,7 +20,9 @@
       "Bash(\"C:/Users/FrederikHye-Hestvang/AppData/Local/Programs/Python/Python312/python.exe\" -m pip install:*)",
       "Bash(\"../.venv/Scripts/python.exe\" -c \"from dbt.cli.main import cli; cli\\(\\)\" debug)",
       "Bash(gh repo view:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(gh pr list:*)",
+      "Bash(git merge:*)"
     ]
   }
 }
