@@ -66,30 +66,48 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "Worktree created successfully" -ForegroundColor Green
 Write-Host ""
 
-# Create data directory
-$DataDir = Join-Path $WorktreePath "data"
-if (-not (Test-Path $DataDir)) {
-    New-Item -ItemType Directory -Path $DataDir | Out-Null
-}
-
-# Copy database if it exists in main
-$MainDb = Join-Path $MainRepo "data\nyc_taxi.duckdb"
-$WorktreeDb = Join-Path $DataDir "nyc_taxi.duckdb"
-
-if (Test-Path $MainDb) {
-    Write-Host "Copying database to worktree..." -ForegroundColor Cyan
-    Copy-Item $MainDb $WorktreeDb
-    Write-Host "Database copied: $WorktreeDb" -ForegroundColor Green
-} else {
-    Write-Host "No database found in main repo (will be created on first pipeline run)" -ForegroundColor Yellow
-}
-
+# Note: Using shared database from main repo (no local copy)
+# All worktrees read/write to: c:\Users\FrederikHye-Hestvang\fagligfredag\data\nyc_taxi.duckdb
+Write-Host "Using shared database from main repo" -ForegroundColor Cyan
 Write-Host ""
 
 # Create virtual environment
 Write-Host "Creating virtual environment..." -ForegroundColor Cyan
 $VenvPath = Join-Path $WorktreePath ".venv"
-python -m venv $VenvPath
+
+# Find Python - check common locations
+$PythonPaths = @(
+    "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
+    "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe",
+    "$env:LOCALAPPDATA\Programs\Python\Python310\python.exe",
+    "C:\Python312\python.exe",
+    "C:\Python311\python.exe",
+    "python"
+)
+
+$PythonExe = $null
+foreach ($path in $PythonPaths) {
+    if (Test-Path $path -ErrorAction SilentlyContinue) {
+        $PythonExe = $path
+        break
+    }
+    # Try as command
+    try {
+        $null = & $path --version 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $PythonExe = $path
+            break
+        }
+    } catch {}
+}
+
+if (-not $PythonExe) {
+    Write-Host "Error: Python not found. Please install Python or add it to PATH." -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Using Python: $PythonExe" -ForegroundColor Gray
+& $PythonExe -m venv $VenvPath
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to create virtual environment" -ForegroundColor Red
