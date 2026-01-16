@@ -15,7 +15,9 @@
       "Bash(find:*)",
       "Bash(timeout:*)",
       "Bash(cd:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "WebFetch",
+      "WebSearch"
     ],
     "deny": [
       "Read(**/.env)",
