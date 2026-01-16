@@ -18,9 +18,10 @@ git diff origin/main..HEAD --stat
 
 ## Process
 
-1. Ensure all changes are committed
-2. Push current branch to origin
-3. Create PR with summary
+1. Check `git status` for uncommitted changes - if any exist, ask if they should be committed first
+2. Get the current branch name and verify it's not main
+3. Push current branch to origin with `git push -u origin HEAD`
+4. Create PR with summary
 
 ## PR Template
 
