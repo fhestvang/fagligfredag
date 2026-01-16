@@ -4,5 +4,5 @@
 log_level = "INFO"
 
 [destination.duckdb]
-# DuckDB database file path (relative to project root)
-credentials = "../nyc_taxi.duckdb"
+# DuckDB database file - stored in /data folder
+credentials = "../data/nyc_taxi.duckdb"

@@ -4,7 +4,14 @@
 - Python 3.9+
 - pip
 
-## Installation
+## Quick Setup (Windows)
+
+Run the setup script in PowerShell:
+```powershell
+.\setup.ps1
+```
+
+## Manual Installation
 
 ### 1. Create Virtual Environment
 ```bash
@@ -22,6 +29,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Storage
+
+Data is stored in a local DuckDB file:
+- **Location**: `data/nyc_taxi.duckdb`
+- **Type**: Single file database (no server needed)
+
 ## Running the Pipeline
 
 ### Step 1: Load Data with dlt
@@ -32,7 +45,7 @@ python nyc_taxi_pipeline.py
 
 This will:
 - Download NYC Yellow Taxi data (Jan 2023, 10k rows sample)
-- Load into DuckDB database at `nyc_taxi.duckdb`
+- Load into DuckDB database at `data/nyc_taxi.duckdb`
 
 ### Step 2: Transform with dbt
 ```bash
