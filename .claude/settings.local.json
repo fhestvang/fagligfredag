@@ -14,7 +14,24 @@
       "Bash(tree:*)",
       "Bash(find:*)",
       "Bash(timeout:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(gh api:*)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets.*)",
+      "Read(**/credentials.*)",
+      "Read(**/*_secret*)",
+      "Read(**/profiles.yml)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/secrets.*)",
+      "Edit(**/credentials.*)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/secrets.*)",
+      "Write(**/credentials.*)"
     ]
   }
 }
