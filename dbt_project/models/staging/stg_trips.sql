@@ -1,8 +1,9 @@
 -- Staging model for taxi trips
 -- Cleans and standardizes raw trip data
+-- All transformations happen here (raw layer is 1:1 copy)
 
-with source as (
-    select * from {{ source('nyc_taxi_raw', 'trips') }}
+with raw as (
+    select * from {{ ref('raw_trips') }}
 ),
 
 cleaned as (
@@ -49,7 +50,7 @@ cleaned as (
         _data_year as data_year,
         _data_month as data_month
 
-    from source
+    from raw
     where
         -- Basic data quality filters
         trip_distance > 0
