@@ -14,7 +14,9 @@
       "Bash(tree:*)",
       "Bash(find:*)",
       "Bash(timeout:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "WebFetch",
+      "WebSearch"
     ]
   }
 }
