@@ -17,6 +17,9 @@ clean-targets:
 
 models:
   nyc_taxi_dbt:
+    raw:
+      +materialized: view
+      +schema: raw
     staging:
       +materialized: view
       +schema: staging
