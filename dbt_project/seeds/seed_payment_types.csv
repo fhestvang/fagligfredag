@@ -1,0 +1,7 @@
+payment_type_code,payment_type_name,payment_category,is_revenue_generating
+1,Credit Card,Electronic,true
+2,Cash,Cash,true
+3,No Charge,Other,false
+4,Dispute,Other,false
+5,Unknown,Other,false
+6,Voided Trip,Other,false

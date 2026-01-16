@@ -8,11 +8,13 @@ with raw as (
 
 cleaned as (
     select
-        -- IDs
+        -- IDs (using actual column names from dlt ingestion)
         unique_id,
         vendor_id,
         pu_location_id as pickup_location_id,
         do_location_id as dropoff_location_id,
+        ratecode_id as rate_code_id,
+        store_and_fwd_flag,
 
         -- Timestamps
         tpep_pickup_datetime as pickup_datetime,
@@ -36,8 +38,8 @@ cleaned as (
 
         -- Amounts
         fare_amount,
-        extra,
-        mta_tax,
+        extra as extra_amount,
+        mta_tax as mta_tax_amount,
         tip_amount,
         tolls_amount,
         improvement_surcharge,

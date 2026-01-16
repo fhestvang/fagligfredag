@@ -1,0 +1,7 @@
+rate_code_id,rate_code_name,rate_category,is_flat_rate
+1,Standard Rate,Standard,false
+2,JFK,Airport,true
+3,Newark,Airport,true
+4,Nassau/Westchester,Negotiated,false
+5,Negotiated Fare,Negotiated,false
+6,Group Ride,Other,false

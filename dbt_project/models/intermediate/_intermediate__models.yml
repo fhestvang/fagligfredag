@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: int_trips_enriched
+    description: >
+      Enriched trip data with calculated fields and dimension keys.
+      This intermediate model prepares staged trip data for the fact table by:
+      - Generating surrogate keys
+      - Creating dimension key references
+      - Calculating derived metrics (duration, speed)
+      - Applying additional business logic filters
+
+    columns:
+      - name: trip_key
+        description: Surrogate key for the trip (MD5 hash of unique_id)
+        tests:
+          - unique
+          - not_null
+
+      - name: unique_id
+        description: Natural key from source system
+        tests:
+          - not_null
+
+      - name: pickup_date_key
+        description: Foreign key to dim_date for pickup date (YYYYMMDD)
+        tests:
+          - not_null
+
+      - name: dropoff_date_key
+        description: Foreign key to dim_date for dropoff date (YYYYMMDD)
+        tests:
+          - not_null
+
+      - name: pickup_time_key
+        description: Foreign key to dim_time for pickup time (HHMM)
+        tests:
+          - not_null
+
+      - name: dropoff_time_key
+        description: Foreign key to dim_time for dropoff time (HHMM)
+        tests:
+          - not_null
+
+      - name: pickup_location_key
+        description: Foreign key to dim_location for pickup location
+        tests:
+          - not_null
+
+      - name: dropoff_location_key
+        description: Foreign key to dim_location for dropoff location
+        tests:
+          - not_null
+
+      - name: payment_type_key
+        description: Foreign key to dim_payment_type
+        tests:
+          - not_null
+
+      - name: rate_code_key
+        description: Foreign key to dim_rate_code
+        tests:
+          - not_null
+
+      - name: vendor_key
+        description: Foreign key to dim_vendor
+        tests:
+          - not_null
+
+      - name: trip_duration_minutes
+        description: Calculated trip duration in minutes
+        tests:
+          - not_null
+
+      - name: total_amount
+        description: Total trip cost
+        tests:
+          - not_null
