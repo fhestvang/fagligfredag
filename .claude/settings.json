@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python demos/schema_change_demo.py:*)"
+    ]
+  }
+}

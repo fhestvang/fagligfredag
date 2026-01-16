@@ -4,7 +4,10 @@
       "Bash(dir:*)",
       "Bash(git push:*)",
       "Bash(powershell:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(..\\\\.venv\\\\Scripts\\\\python.exe -c \"from dbt.cli.main import cli; cli\\(\\)\" run)",
+      "Bash(\"../.venv/Scripts/python.exe\" -c \"from dbt.cli.main import cli; cli\\(\\)\" run)"
     ]
   }
 }
