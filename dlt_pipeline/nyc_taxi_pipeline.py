@@ -4,11 +4,15 @@ Ingests NYC TLC Trip Record Data into DuckDB
 """
 
 import dlt
-from dlt.sources.helpers import requests
-
+from pathlib import Path
 
 # NYC TLC provides parquet files - we'll use a sample for demo
 NYC_TAXI_BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data"
+
+# Get absolute path to data directory
+PROJECT_ROOT = Path(__file__).parent.parent
+DATA_DIR = PROJECT_ROOT / "data"
+DUCKDB_PATH = str(DATA_DIR / "nyc_taxi.duckdb")
 
 
 @dlt.source(name="nyc_taxi")
@@ -76,11 +80,15 @@ def run_pipeline(
         taxi_type: Type of taxi
         dataset_name: Name of the destination dataset
     """
-    # Configure pipeline
+    # Ensure data directory exists
+    DATA_DIR.mkdir(exist_ok=True)
+
+    # Configure pipeline with absolute path
     pipeline = dlt.pipeline(
         pipeline_name="nyc_taxi_pipeline",
-        destination="duckdb",
+        destination=dlt.destinations.duckdb(DUCKDB_PATH),
         dataset_name=dataset_name,
+        pipelines_dir=str(PROJECT_ROOT / ".dlt_pipelines"),
     )
 
     # Get source

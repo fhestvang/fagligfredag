@@ -1,0 +1,308 @@
+{
+  "version": 2,
+  "version_hash": "MTQ3G3TW7wapwq9Wz9nMsAje0dZcXAZWM8zjt4aNJi0=",
+  "engine_version": 11,
+  "name": "nyc_taxi",
+  "tables": {
+    "_dlt_version": {
+      "name": "_dlt_version",
+      "columns": {
+        "version": {
+          "name": "version",
+          "data_type": "bigint",
+          "nullable": false
+        },
+        "engine_version": {
+          "name": "engine_version",
+          "data_type": "bigint",
+          "nullable": false
+        },
+        "inserted_at": {
+          "name": "inserted_at",
+          "data_type": "timestamp",
+          "nullable": false
+        },
+        "schema_name": {
+          "name": "schema_name",
+          "data_type": "text",
+          "nullable": false
+        },
+        "version_hash": {
+          "name": "version_hash",
+          "data_type": "text",
+          "nullable": false
+        },
+        "schema": {
+          "name": "schema",
+          "data_type": "text",
+          "nullable": false
+        }
+      },
+      "write_disposition": "skip",
+      "resource": "_dlt_version",
+      "description": "Created by DLT. Tracks schema updates"
+    },
+    "_dlt_loads": {
+      "name": "_dlt_loads",
+      "columns": {
+        "load_id": {
+          "name": "load_id",
+          "data_type": "text",
+          "nullable": false,
+          "precision": 64
+        },
+        "schema_name": {
+          "name": "schema_name",
+          "data_type": "text",
+          "nullable": true
+        },
+        "status": {
+          "name": "status",
+          "data_type": "bigint",
+          "nullable": false
+        },
+        "inserted_at": {
+          "name": "inserted_at",
+          "data_type": "timestamp",
+          "nullable": false
+        },
+        "schema_version_hash": {
+          "name": "schema_version_hash",
+          "data_type": "text",
+          "nullable": true
+        }
+      },
+      "write_disposition": "skip",
+      "resource": "_dlt_loads",
+      "description": "Created by DLT. Tracks completed loads"
+    },
+    "trips": {
+      "columns": {
+        "vendor_id": {
+          "name": "vendor_id",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "tpep_pickup_datetime": {
+          "name": "tpep_pickup_datetime",
+          "data_type": "timestamp",
+          "nullable": true
+        },
+        "tpep_dropoff_datetime": {
+          "name": "tpep_dropoff_datetime",
+          "data_type": "timestamp",
+          "nullable": true
+        },
+        "passenger_count": {
+          "name": "passenger_count",
+          "data_type": "double",
+          "nullable": true
+        },
+        "trip_distance": {
+          "name": "trip_distance",
+          "data_type": "double",
+          "nullable": true
+        },
+        "ratecode_id": {
+          "name": "ratecode_id",
+          "data_type": "double",
+          "nullable": true
+        },
+        "store_and_fwd_flag": {
+          "name": "store_and_fwd_flag",
+          "data_type": "text",
+          "nullable": true
+        },
+        "pu_location_id": {
+          "name": "pu_location_id",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "do_location_id": {
+          "name": "do_location_id",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "payment_type": {
+          "name": "payment_type",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "fare_amount": {
+          "name": "fare_amount",
+          "data_type": "double",
+          "nullable": true
+        },
+        "extra": {
+          "name": "extra",
+          "data_type": "double",
+          "nullable": true
+        },
+        "mta_tax": {
+          "name": "mta_tax",
+          "data_type": "double",
+          "nullable": true
+        },
+        "tip_amount": {
+          "name": "tip_amount",
+          "data_type": "double",
+          "nullable": true
+        },
+        "tolls_amount": {
+          "name": "tolls_amount",
+          "data_type": "double",
+          "nullable": true
+        },
+        "improvement_surcharge": {
+          "name": "improvement_surcharge",
+          "data_type": "double",
+          "nullable": true
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "data_type": "double",
+          "nullable": true
+        },
+        "congestion_surcharge": {
+          "name": "congestion_surcharge",
+          "data_type": "double",
+          "nullable": true
+        },
+        "airport_fee": {
+          "name": "airport_fee",
+          "data_type": "double",
+          "nullable": true
+        },
+        "unique_id": {
+          "name": "unique_id",
+          "nullable": false,
+          "primary_key": true,
+          "data_type": "bigint"
+        },
+        "_taxi_type": {
+          "name": "_taxi_type",
+          "data_type": "text",
+          "nullable": true
+        },
+        "_data_year": {
+          "name": "_data_year",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "_data_month": {
+          "name": "_data_month",
+          "data_type": "bigint",
+          "nullable": true
+        },
+        "_dlt_load_id": {
+          "name": "_dlt_load_id",
+          "data_type": "text",
+          "nullable": false
+        },
+        "_dlt_id": {
+          "name": "_dlt_id",
+          "data_type": "text",
+          "nullable": false,
+          "unique": true,
+          "row_key": true
+        }
+      },
+      "write_disposition": "replace",
+      "name": "trips",
+      "resource": "trips",
+      "x-normalizer": {
+        "seen-data": true
+      }
+    },
+    "_dlt_pipeline_state": {
+      "columns": {
+        "version": {
+          "name": "version",
+          "data_type": "bigint",
+          "nullable": false
+        },
+        "engine_version": {
+          "name": "engine_version",
+          "data_type": "bigint",
+          "nullable": false
+        },
+        "pipeline_name": {
+          "name": "pipeline_name",
+          "data_type": "text",
+          "nullable": false
+        },
+        "state": {
+          "name": "state",
+          "data_type": "text",
+          "nullable": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "data_type": "timestamp",
+          "nullable": false
+        },
+        "version_hash": {
+          "name": "version_hash",
+          "data_type": "text",
+          "nullable": true
+        },
+        "_dlt_load_id": {
+          "name": "_dlt_load_id",
+          "data_type": "text",
+          "nullable": false,
+          "precision": 64
+        },
+        "_dlt_id": {
+          "name": "_dlt_id",
+          "data_type": "text",
+          "nullable": false,
+          "unique": true,
+          "row_key": true
+        }
+      },
+      "write_disposition": "append",
+      "file_format": "preferred",
+      "name": "_dlt_pipeline_state",
+      "resource": "_dlt_pipeline_state",
+      "x-normalizer": {
+        "seen-data": true
+      }
+    }
+  },
+  "settings": {
+    "detections": [
+      "iso_timestamp"
+    ],
+    "default_hints": {
+      "not_null": [
+        "_dlt_id",
+        "_dlt_root_id",
+        "_dlt_parent_id",
+        "_dlt_list_idx",
+        "_dlt_load_id"
+      ],
+      "parent_key": [
+        "_dlt_parent_id"
+      ],
+      "root_key": [
+        "_dlt_root_id"
+      ],
+      "unique": [
+        "_dlt_id"
+      ],
+      "row_key": [
+        "_dlt_id"
+      ]
+    }
+  },
+  "normalizers": {
+    "names": "snake_case",
+    "json": {
+      "module": "dlt.common.normalizers.json.relational"
+    }
+  },
+  "previous_hashes": [
+    "Gi1jUkjBKgFtbmC6y2r8JgB4YT8yrTualZMG8+DKH8k=",
+    "fJmEGydHnmrI5/POpd1r/6XY91WLVP1Un9ccjgTzvM8="
+  ]
+}

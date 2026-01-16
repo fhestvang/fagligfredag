@@ -2,7 +2,3 @@
 
 [runtime]
 log_level = "INFO"
-
-[destination.duckdb]
-# DuckDB database file - stored in /data folder
-credentials = "../data/nyc_taxi.duckdb"

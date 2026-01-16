@@ -9,9 +9,9 @@ cleaned as (
     select
         -- IDs
         unique_id,
-        vendorid as vendor_id,
-        pulocationid as pickup_location_id,
-        dolocationid as dropoff_location_id,
+        vendor_id,
+        pu_location_id as pickup_location_id,
+        do_location_id as dropoff_location_id,
 
         -- Timestamps
         tpep_pickup_datetime as pickup_datetime,
@@ -41,6 +41,8 @@ cleaned as (
         tolls_amount,
         improvement_surcharge,
         total_amount,
+        congestion_surcharge,
+        airport_fee,
 
         -- Metadata
         _taxi_type as taxi_type,
