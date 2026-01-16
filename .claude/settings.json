@@ -1,7 +1,38 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python demos/schema_change_demo.py:*)"
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)",
+      "Bash(git reset:*)",
+      "Bash(git branch:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git config:*)",
+      "Bash(git worktree:*)",
+      "Bash(git for-each-ref:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo view:*)",
+      "Bash(dir:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(powershell:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(dbt run:*)",
+      "Bash(dbt test:*)",
+      "Bash(dbt build:*)",
+      "Bash(dbt debug:*)",
+      "Bash(dbt deps:*)"
     ]
   }
 }
