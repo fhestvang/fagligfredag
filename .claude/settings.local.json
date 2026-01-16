@@ -34,7 +34,16 @@
       "Bash(timeout /t 3 /nobreak)",
       "Bash(\".venv/Scripts/python.exe\":*)",
       "Bash(find:*)",
-      "Bash(git -C \"c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag-agent2\" log --oneline -10)"
+      "Bash(git -C \"c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag-agent2\" log --oneline -10)",
+      "Bash(git reset:*)",
+      "Bash(\"../.venv/Scripts/python.exe\" -c \"from dbt.cli.main import cli; cli\\(\\)\" seed)",
+      "Bash(dbt run-operation:*)",
+      "Bash(dbt show:*)",
+      "Bash(python:*)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"cd ''c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag\\\\dbt_project''; py -m dbt run\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"cd ''c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag\\\\dbt_project''; & ''c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag\\\\.venv\\\\Scripts\\\\python.exe'' -m dbt run\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -Command:*)",
+      "Bash(powershell.exe -NoProfile -Command \"Remove-Item ''c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag\\\\dbt_project\\\\models\\\\marts\\\\aggregates'' -Recurse -Force\")"
     ]
   }
 }

@@ -10,7 +10,7 @@ sources:
         columns:
           - name: unique_id
             description: Unique identifier for each trip
-          - name: vendorid
+          - name: vendor_id
             description: Code for the vendor providing the record
           - name: tpep_pickup_datetime
             description: Pickup date and time
@@ -20,15 +20,41 @@ sources:
             description: Number of passengers
           - name: trip_distance
             description: Trip distance in miles
-          - name: pulocationid
+          - name: pu_location_id
             description: Pickup location zone ID
-          - name: dolocationid
+          - name: do_location_id
             description: Dropoff location zone ID
+          - name: ratecode_id
+            description: Rate code ID
+          - name: store_and_fwd_flag
+            description: Store and forward flag
           - name: payment_type
             description: Payment method code
           - name: fare_amount
             description: Base fare amount
+          - name: extra
+            description: Extra charges
+          - name: mta_tax
+            description: MTA tax
           - name: tip_amount
             description: Tip amount
+          - name: tolls_amount
+            description: Tolls amount
+          - name: improvement_surcharge
+            description: Improvement surcharge
           - name: total_amount
             description: Total trip cost
+          - name: congestion_surcharge
+            description: Congestion surcharge
+          - name: airport_fee
+            description: Airport fee
+          - name: _taxi_type
+            description: Type of taxi (yellow, green)
+          - name: _data_year
+            description: Year of data
+          - name: _data_month
+            description: Month of data
+          - name: _dlt_id
+            description: DLT internal ID
+          - name: _dlt_load_id
+            description: DLT load batch ID

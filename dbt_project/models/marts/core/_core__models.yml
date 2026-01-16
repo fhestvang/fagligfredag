@@ -1,0 +1,161 @@
+version: 2
+
+models:
+  # ============================================
+  # DIMENSION TABLES
+  # ============================================
+
+  - name: dim_date
+    description: >
+      Calendar date dimension with day, week, month, quarter, and year attributes.
+      Generated date range: 2020-01-01 to 2030-12-31.
+    columns:
+      - name: date_key
+        description: Surrogate key (YYYYMMDD format)
+        tests:
+          - unique
+          - not_null
+      - name: date_day
+        description: Calendar date
+        tests:
+          - unique
+          - not_null
+      - name: day_of_week
+        description: Day of week (0=Sunday, 6=Saturday in DuckDB)
+      - name: is_weekend
+        description: True if Saturday or Sunday
+
+  - name: dim_time
+    description: >
+      Time of day dimension at minute granularity.
+      Contains 1440 rows (one per minute in a day).
+    columns:
+      - name: time_key
+        description: Surrogate key (HHMM format, e.g., 930 = 09:30)
+        tests:
+          - unique
+          - not_null
+      - name: hour_24
+        description: Hour in 24-hour format (0-23)
+      - name: time_period
+        description: Time period classification (Morning, Afternoon, Evening, Night)
+      - name: rush_hour_flag
+        description: True if typical rush hour (7-9 AM or 4-7 PM)
+
+  - name: dim_location
+    description: >
+      Location dimension derived from trip data.
+      Basic ID-based dimension (can be enhanced with TLC zone data).
+    columns:
+      - name: location_key
+        description: Surrogate key (equals location_id for simplicity)
+        tests:
+          - unique
+          - not_null
+      - name: location_id
+        description: NYC TLC location zone ID
+        tests:
+          - not_null
+
+  - name: dim_payment_type
+    description: >
+      Payment type dimension based on NYC TLC payment codes.
+      Includes revenue-generating flag for financial analysis.
+    columns:
+      - name: payment_type_key
+        description: Surrogate key
+        tests:
+          - unique
+          - not_null
+      - name: payment_type_code
+        description: TLC payment type code (1-6)
+      - name: payment_type_name
+        description: Human-readable payment type name
+      - name: is_revenue_generating
+        description: True if actual payment received (Credit Card, Cash)
+
+  - name: dim_rate_code
+    description: >
+      Rate code dimension based on NYC TLC rate codes.
+      Distinguishes standard, airport, and negotiated fares.
+    columns:
+      - name: rate_code_key
+        description: Surrogate key
+        tests:
+          - unique
+          - not_null
+      - name: rate_code_id
+        description: TLC rate code ID (1-6)
+      - name: rate_code_name
+        description: Human-readable rate code name
+      - name: is_flat_rate
+        description: True if flat-rate fare (e.g., JFK, Newark)
+
+  - name: dim_vendor
+    description: >
+      Vendor dimension for taxi technology providers.
+      Currently includes CMT and VeriFone.
+    columns:
+      - name: vendor_key
+        description: Surrogate key
+        tests:
+          - unique
+          - not_null
+      - name: vendor_id
+        description: TLC vendor ID
+      - name: vendor_name
+        description: Full vendor name
+
+  # ============================================
+  # FACT TABLES
+  # ============================================
+
+  - name: fct_trips
+    description: >
+      Atomic fact table containing individual taxi trip records.
+      Grain: One row per taxi trip.
+      This is the primary fact table - all aggregates derive from it.
+      Configured for incremental loading.
+    columns:
+      - name: trip_key
+        description: Surrogate key (MD5 hash of unique_id)
+        tests:
+          - unique
+          - not_null
+      - name: trip_id
+        description: Natural key from source system
+        tests:
+          - not_null
+      - name: pickup_date_key
+        description: FK to dim_date for pickup date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: dropoff_date_key
+        description: FK to dim_date for dropoff date
+        tests:
+          - not_null
+      - name: pickup_location_key
+        description: FK to dim_location for pickup
+        tests:
+          - not_null
+      - name: dropoff_location_key
+        description: FK to dim_location for dropoff
+        tests:
+          - not_null
+      - name: payment_type_key
+        description: FK to dim_payment_type
+        tests:
+          - not_null
+      - name: total_amount
+        description: Total trip cost (additive fact)
+        tests:
+          - not_null
+      - name: trip_distance_miles
+        description: Trip distance in miles (additive fact)
+        tests:
+          - not_null
+      - name: trip_duration_minutes
+        description: Calculated trip duration (additive fact)
