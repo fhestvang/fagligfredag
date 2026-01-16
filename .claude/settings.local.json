@@ -23,7 +23,8 @@
       "Bash(gh repo view:*)",
       "Bash(git add:*)",
       "Bash(gh pr list:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
