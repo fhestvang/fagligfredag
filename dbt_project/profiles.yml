@@ -2,7 +2,8 @@ nyc_taxi:
   outputs:
     dev:
       type: duckdb
-      path: '../data/nyc_taxi.duckdb'
+      # Shared database - all worktrees use the main repo's database
+      path: 'c:\Users\FrederikHye-Hestvang\fagligfredag\data\nyc_taxi.duckdb'
       schema: main
       threads: 4
   target: dev

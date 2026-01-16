@@ -19,8 +19,9 @@ NYC_TAXI_BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data"
 PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 
-# Allow database path override via environment variable (for worktree isolation)
-DUCKDB_PATH = os.environ.get("DUCKDB_PATH", str(DATA_DIR / "nyc_taxi.duckdb"))
+# Shared database path - all worktrees use the main repo's database
+SHARED_DB_PATH = r"c:\Users\FrederikHye-Hestvang\fagligfredag\data\nyc_taxi.duckdb"
+DUCKDB_PATH = os.environ.get("DUCKDB_PATH", SHARED_DB_PATH)
 
 
 @dlt.source(name="nyc_taxi")
