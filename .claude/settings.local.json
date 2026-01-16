@@ -24,7 +24,9 @@
       "Bash(git add:*)",
       "Bash(gh pr list:*)",
       "Bash(git merge:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(find:*)",
+      "Bash(git -C \"c:\\\\Users\\\\FrederikHye-Hestvang\\\\fagligfredag-agent2\" log --oneline -10)"
     ]
   }
 }
