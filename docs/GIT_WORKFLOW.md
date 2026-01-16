@@ -16,6 +16,17 @@ fagligfredag-agent1/       # Worktree 1 - persistent workspace for agent
 fagligfredag-agent2/       # Worktree 2 - persistent workspace for agent
 ```
 
+## Current Status
+
+| Location | Branch | Status |
+|----------|--------|--------|
+| GitHub | `main` | Remote repository |
+| fagligfredag/ | `main` | Synced with remote |
+| fagligfredag-agent1/ | `feature/agent1-ready` | Local only (ready for work) |
+| fagligfredag-agent2/ | `feature/agent2-ready` | Local only (ready for work) |
+
+**Note:** Worktree branches appear on GitHub only after the first push.
+
 ## Key Concepts
 
 ### Shared Database
