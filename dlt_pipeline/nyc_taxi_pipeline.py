@@ -8,6 +8,7 @@ Supports:
 - Schema evolution (new columns handled automatically)
 """
 
+import os
 import dlt
 from pathlib import Path
 
@@ -17,7 +18,9 @@ NYC_TAXI_BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data"
 # Get absolute path to data directory
 PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
-DUCKDB_PATH = str(DATA_DIR / "nyc_taxi.duckdb")
+
+# Allow database path override via environment variable (for worktree isolation)
+DUCKDB_PATH = os.environ.get("DUCKDB_PATH", str(DATA_DIR / "nyc_taxi.duckdb"))
 
 
 @dlt.source(name="nyc_taxi")
