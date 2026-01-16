@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_trips
+    description: Cleaned and standardized taxi trip data
+    columns:
+      - name: unique_id
+        description: Unique trip identifier
+        tests:
+          - unique
+          - not_null
+      - name: pickup_datetime
+        description: Trip pickup timestamp
+      - name: dropoff_datetime
+        description: Trip dropoff timestamp
+      - name: trip_distance
+        description: Trip distance in miles
+        tests:
+          - not_null
+      - name: total_amount
+        description: Total trip cost
+        tests:
+          - not_null

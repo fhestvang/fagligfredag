@@ -1,0 +1,8 @@
+# dlt configuration
+
+[runtime]
+log_level = "INFO"
+
+[destination.duckdb]
+# DuckDB database file path (relative to project root)
+credentials = "../nyc_taxi.duckdb"

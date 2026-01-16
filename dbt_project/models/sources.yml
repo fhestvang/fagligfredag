@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: nyc_taxi_raw
+    description: Raw NYC taxi data loaded by dlt
+    schema: nyc_taxi_raw
+    tables:
+      - name: trips
+        description: Raw taxi trip records
+        columns:
+          - name: unique_id
+            description: Unique identifier for each trip
+          - name: vendorid
+            description: Code for the vendor providing the record
+          - name: tpep_pickup_datetime
+            description: Pickup date and time
+          - name: tpep_dropoff_datetime
+            description: Dropoff date and time
+          - name: passenger_count
+            description: Number of passengers
+          - name: trip_distance
+            description: Trip distance in miles
+          - name: pulocationid
+            description: Pickup location zone ID
+          - name: dolocationid
+            description: Dropoff location zone ID
+          - name: payment_type
+            description: Payment method code
+          - name: fare_amount
+            description: Base fare amount
+          - name: tip_amount
+            description: Tip amount
+          - name: total_amount
+            description: Total trip cost
