@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: raw_trips
+    description: Raw taxi trip data - 1:1 copy from dlt source with no transformations
+    columns:
+      - name: vendor_id
+        description: Code for the vendor providing the record
+      - name: tpep_pickup_datetime
+        description: Pickup date and time (original timestamp)
+      - name: tpep_dropoff_datetime
+        description: Dropoff date and time (original timestamp)
+      - name: passenger_count
+        description: Number of passengers
+      - name: trip_distance
+        description: Trip distance in miles
+      - name: ratecode_id
+        description: Rate code for the trip
+      - name: store_and_fwd_flag
+        description: Store and forward flag
+      - name: pu_location_id
+        description: Pickup location zone ID
+      - name: do_location_id
+        description: Dropoff location zone ID
+      - name: payment_type
+        description: Payment method code (1=Credit, 2=Cash, etc.)
+      - name: fare_amount
+        description: Base fare amount
+      - name: extra
+        description: Extra charges
+      - name: mta_tax
+        description: MTA tax
+      - name: tip_amount
+        description: Tip amount
+      - name: tolls_amount
+        description: Tolls amount
+      - name: improvement_surcharge
+        description: Improvement surcharge
+      - name: total_amount
+        description: Total trip cost
+      - name: congestion_surcharge
+        description: Congestion surcharge
+      - name: airport_fee
+        description: Airport fee
+      - name: unique_id
+        description: Unique identifier added by dlt
+        tests:
+          - unique
+          - not_null
+      - name: _taxi_type
+        description: Type of taxi (metadata from dlt)
+      - name: _data_year
+        description: Year of data (metadata from dlt)
+      - name: _data_month
+        description: Month of data (metadata from dlt)
+      - name: _dlt_load_id
+        description: dlt load identifier
+      - name: _dlt_id
+        description: dlt record identifier
