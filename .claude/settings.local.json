@@ -24,7 +24,15 @@
       "Bash(git add:*)",
       "Bash(gh pr list:*)",
       "Bash(git merge:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(\"c:/Users/FrederikHye-Hestvang/fagligfredag-agent1/.venv/Scripts/pip.exe\" install -r requirements.txt)",
+      "Bash(\"c:/Users/FrederikHye-Hestvang/fagligfredag-agent1/.venv/Scripts/python.exe\" run.py)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(\".venv/Scripts/python.exe\":*)"
     ]
   }
 }
