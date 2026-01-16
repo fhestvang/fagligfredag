@@ -1,6 +1,11 @@
 """
 NYC Taxi Data Pipeline using dlt
 Ingests NYC TLC Trip Record Data into DuckDB
+
+Supports:
+- Full replace loads
+- Incremental/merge loads
+- Schema evolution (new columns handled automatically)
 """
 
 import dlt
@@ -16,7 +21,12 @@ DUCKDB_PATH = str(DATA_DIR / "nyc_taxi.duckdb")
 
 
 @dlt.source(name="nyc_taxi")
-def nyc_taxi_source(year: int = 2023, month: int = 1, taxi_type: str = "yellow"):
+def nyc_taxi_source(
+    year: int = 2023,
+    month: int = 1,
+    taxi_type: str = "yellow",
+    write_disposition: str = "replace"
+):
     """
     Source for NYC Taxi data.
 
@@ -24,9 +34,17 @@ def nyc_taxi_source(year: int = 2023, month: int = 1, taxi_type: str = "yellow")
         year: Year of data (2009-2024)
         month: Month of data (1-12)
         taxi_type: Type of taxi (yellow, green, fhv, fhvhv)
+        write_disposition: How to handle existing data
+            - "replace": Replace all data (default)
+            - "merge": Upsert based on primary key
+            - "append": Add new records without checking duplicates
     """
 
-    @dlt.resource(name="trips", write_disposition="replace", primary_key="unique_id")
+    @dlt.resource(
+        name="trips",
+        write_disposition=write_disposition,
+        primary_key="unique_id"
+    )
     def trips_resource():
         """Load taxi trip data."""
         import pandas as pd
@@ -43,8 +61,12 @@ def nyc_taxi_source(year: int = 2023, month: int = 1, taxi_type: str = "yellow")
             # Read parquet file directly from URL
             df = pd.read_parquet(url)
 
-            # Add unique ID for primary key
-            df['unique_id'] = range(len(df))
+            # Create unique ID combining year, month, taxi_type and row index
+            # This ensures uniqueness across different loads
+            df['unique_id'] = df.apply(
+                lambda row: f"{taxi_type}_{year}_{month}_{row.name}",
+                axis=1
+            )
 
             # Add metadata columns
             df['_taxi_type'] = taxi_type
@@ -69,7 +91,8 @@ def run_pipeline(
     year: int = 2023,
     month: int = 1,
     taxi_type: str = "yellow",
-    dataset_name: str = "nyc_taxi_raw"
+    dataset_name: str = "nyc_taxi_raw",
+    write_disposition: str = "replace"
 ):
     """
     Run the NYC Taxi data pipeline.
@@ -79,6 +102,7 @@ def run_pipeline(
         month: Month of data
         taxi_type: Type of taxi
         dataset_name: Name of the destination dataset
+        write_disposition: "replace", "merge", or "append"
     """
     # Ensure data directory exists
     DATA_DIR.mkdir(exist_ok=True)
@@ -91,11 +115,17 @@ def run_pipeline(
         pipelines_dir=str(PROJECT_ROOT / ".dlt_pipelines"),
     )
 
-    # Get source
-    source = nyc_taxi_source(year=year, month=month, taxi_type=taxi_type)
+    # Get source with specified write disposition
+    source = nyc_taxi_source(
+        year=year,
+        month=month,
+        taxi_type=taxi_type,
+        write_disposition=write_disposition
+    )
 
     # Run pipeline
     print(f"Starting pipeline for {taxi_type} taxi data: {year}-{month:02d}")
+    print(f"Write disposition: {write_disposition}")
     load_info = pipeline.run(source)
 
     print(f"Pipeline completed!")
