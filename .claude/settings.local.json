@@ -10,7 +10,8 @@
       "Bash(\"../.venv/Scripts/python.exe\" -c \"from dbt.cli.main import cli; cli\\(\\)\" run)",
       "Bash(gh pr create --title \"Add incremental load and schema evolution demos\" --body \"$\\(cat <<''EOF''\n## Summary\n- Add demo scripts showcasing dlt''s data engineering capabilities\n- Fix dbt schema naming to use clean names \\(`raw`, `staging`, `marts`\\) instead of `main_*` prefix\n\n## Changes\n- **dlt pipeline**: Updated to support `write_disposition` parameter \\(replace, merge, append\\)\n- **Schema change demo**: Shows automatic column addition when source schema evolves\n- **Incremental load demo**: Shows merge/upsert behavior with primary keys\n- **dbt macro**: Custom `generate_schema_name` for proper schema naming\n- **Documentation**: Added DEMOS.md with instructions\n\n## Test plan\n- [ ] Run `python demos/schema_change_demo.py` - verify new columns added automatically\n- [ ] Run `python demos/incremental_load_demo.py` - verify merge behavior\n- [ ] Run `dbt run` - verify schemas are `raw`, `staging`, `marts` \\(not `main_*`\\)\nEOF\n\\)\")",
       "Bash(git fetch:*)",
-      "Bash(gh pr view:*)"
+      "Bash(gh pr view:*)",
+      "Bash(git pull:*)"
     ]
   }
 }
