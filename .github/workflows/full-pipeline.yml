@@ -1,0 +1,106 @@
+name: Full Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      taxi_type:
+        description: 'Taxi type to load'
+        required: true
+        default: 'yellow'
+        type: choice
+        options:
+          - yellow
+          - green
+      year:
+        description: 'Year'
+        required: true
+        default: '2023'
+      month:
+        description: 'Month'
+        required: true
+        default: '1'
+      row_limit:
+        description: 'Row limit (0 for all)'
+        required: false
+        default: '10000'
+  schedule:
+    # Run monthly on the 5th at 6 AM UTC
+    - cron: '0 6 5 * *'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  run-pipeline:
+    name: Run Full ETL Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dlt[duckdb] dbt-duckdb dbt-utils pyarrow pandas
+
+      - name: Create data directory
+        run: mkdir -p data
+
+      - name: Run dlt ingestion
+        run: |
+          cd dlt_pipeline
+          python -c "
+          from nyc_taxi_pipeline import run_pipeline
+          run_pipeline(
+              year=${{ github.event.inputs.year || '2023' }},
+              month=${{ github.event.inputs.month || '1' }},
+              taxi_type='${{ github.event.inputs.taxi_type || 'yellow' }}',
+              row_limit=${{ github.event.inputs.row_limit || '10000' }}
+          )
+          "
+        env:
+          DUCKDB_PATH: ../data/nyc_taxi.duckdb
+
+      - name: Install dbt packages
+        working-directory: dbt_project
+        run: dbt deps
+
+      - name: Run dbt build
+        working-directory: dbt_project
+        run: dbt build
+
+      - name: Generate summary
+        run: |
+          echo "## Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Taxi Type | ${{ github.event.inputs.taxi_type || 'yellow' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Year | ${{ github.event.inputs.year || '2023' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Month | ${{ github.event.inputs.month || '1' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Row Limit | ${{ github.event.inputs.row_limit || '10000' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Pipeline completed at $(date)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload database artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyc-taxi-database
+          path: data/nyc_taxi.duckdb
+          retention-days: 7
+
+      - name: Upload dbt artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-run-artifacts
+          path: |
+            dbt_project/target/manifest.json
+            dbt_project/target/run_results.json
+          retention-days: 7

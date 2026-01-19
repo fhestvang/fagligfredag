@@ -1,0 +1,63 @@
+name: dlt CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dlt_pipeline/**'
+      - '.github/workflows/dlt-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dlt_pipeline/**'
+      - '.github/workflows/dlt-ci.yml'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  dlt-validate:
+    name: dlt Validate & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dlt[duckdb] pyarrow pandas
+
+      - name: Verify dlt installation
+        run: python -c "import dlt; print(f'dlt version: {dlt.__version__}')"
+
+      - name: Create data directory
+        run: mkdir -p data
+
+      - name: Lint Python files
+        run: |
+          pip install ruff
+          ruff check dlt_pipeline/ --ignore E501
+
+      - name: Validate pipeline syntax
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'dlt_pipeline')
+          from nyc_taxi_pipeline import nyc_taxi_source
+          print('Pipeline source validated successfully')
+          "
+
+      - name: Run pipeline (sample data)
+        run: |
+          cd dlt_pipeline
+          python nyc_taxi_pipeline.py
+        env:
+          DUCKDB_PATH: ../data/nyc_taxi_ci.duckdb
