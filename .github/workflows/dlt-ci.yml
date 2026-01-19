@@ -36,7 +36,7 @@ jobs:
           pip install dlt[duckdb] pyarrow pandas
 
       - name: Verify dlt installation
-        run: python -c "import dlt; print(f'dlt version: {dlt.__version__}')"
+        run: python -c "import dlt; print('dlt version:', dlt.__version__)"
 
       - name: Create data directory
         run: mkdir -p data
