@@ -48,12 +48,7 @@ jobs:
 
       - name: Validate pipeline syntax
         run: |
-          python -c "
-          import sys
-          sys.path.insert(0, 'dlt_pipeline')
-          from nyc_taxi_pipeline import nyc_taxi_source
-          print('Pipeline source validated successfully')
-          "
+          python -c "import sys; sys.path.insert(0, 'dlt_pipeline'); from nyc_taxi_pipeline import nyc_taxi_source; print('Pipeline source validated successfully')"
 
       - name: Run pipeline (sample data)
         run: |
