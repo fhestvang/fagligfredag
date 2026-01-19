@@ -1,0 +1,55 @@
+# Agent Resources (agr) Configuration
+# Package manager for Claude Code skills, agents, and commands
+# See: https://github.com/kasperjunge/agent-resources
+
+[package]
+name = "nyc-taxi-analytics-template"
+version = "1.0.0"
+description = "Best-practice data engineering template with dlt, dbt, and Power BI"
+authors = ["fhestvang"]
+license = "MIT"
+repository = "https://github.com/fhestvang/fagligfredag"
+keywords = ["dbt", "dlt", "dimensional-modeling", "data-engineering", "power-bi"]
+
+[dependencies]
+# No external dependencies yet - this is a standalone template
+
+[skills]
+# Skills auto-trigger on relevant topics
+dimensional-modeling = { path = "skills/dimensional-modeling", auto_trigger = true }
+
+[commands]
+# User-invoked slash commands
+arch-review = { path = "commands/arch-review.md" }
+bugs = { path = "commands/bugs.md" }
+commit = { path = "commands/commit.md" }
+dbt-build = { path = "commands/dbt-build.md" }
+dbt-docs = { path = "commands/dbt-docs.md" }
+dbt-run = { path = "commands/dbt-run.md" }
+pr = { path = "commands/pr.md" }
+rebase = { path = "commands/rebase.md" }
+run-pipeline = { path = "commands/run-pipeline.md" }
+worktree = { path = "commands/worktree.md" }
+
+[agents]
+# Specialized agents for task delegation
+code-reviewer = { path = "agents/code-reviewer.md" }
+data-modeler = { path = "agents/data-modeler.md" }
+dbt-doctor = { path = "agents/dbt-doctor.md" }
+dbt-runner = { path = "agents/dbt-runner.md" }
+dim-modeler = { path = "agents/dim-modeler.md" }
+error-coordinator = { path = "agents/error-coordinator.md" }
+powerbi-modeler = { path = "agents/powerbi-modeler.md" }
+workflow-orchestrator = { path = "agents/workflow-orchestrator.md" }
+
+[rules]
+# Project-specific rules
+dbt-standards = { path = "rules/dbt-standards.md" }
+git-workflow = { path = "rules/git-workflow.md" }
+power-bi-standards = { path = "rules/power-bi-standards.md" }
+
+[scripts]
+# Automation scripts
+validate-dbt = { path = "../scripts/validate_dbt_model.py", description = "Validate dbt model conventions" }
+bootstrap = { path = "../scripts/bootstrap_project.ps1", description = "Create new project from template" }
+bus-matrix = { path = "skills/dimensional-modeling/scripts/generate_bus_matrix.py", description = "Generate dimensional bus matrix" }
