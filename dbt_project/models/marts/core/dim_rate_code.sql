@@ -4,9 +4,12 @@
     )
 }}
 
+-- Rate code dimension with hash-based surrogate key
+-- Separates surrogate key from natural key per Kimball methodology
+
 with rate_codes as (
     select
-        rate_code_id as rate_code_key,
+        {{ generate_surrogate_key(['rate_code_id']) }} as rate_code_key,
         rate_code_id,
         rate_code_name,
         rate_category,
@@ -17,7 +20,7 @@ with rate_codes as (
 
     -- Add unknown rate code for handling nulls
     select
-        -1 as rate_code_key,
+        {{ get_unknown_key() }} as rate_code_key,
         -1 as rate_code_id,
         'Unknown' as rate_code_name,
         'Other' as rate_category,

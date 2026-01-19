@@ -4,8 +4,8 @@
     )
 }}
 
--- Basic location dimension derived from trip data
--- Uses location_id as both natural and surrogate key for simplicity
+-- Location dimension with hash-based surrogate key
+-- Separates surrogate key from natural key per Kimball methodology
 -- Can be enhanced later with full TLC zone data (borough, zone_name, etc.)
 
 with locations_from_trips as (
@@ -23,7 +23,7 @@ with locations_from_trips as (
 
 location_dimension as (
     select
-        location_id as location_key,  -- Using natural key as surrogate for simplicity
+        {{ generate_surrogate_key(['location_id']) }} as location_key,
         location_id,
         'Unknown' as borough,  -- Can be enhanced with TLC zone data
         'Zone ' || location_id as zone_name,  -- Placeholder
@@ -34,7 +34,7 @@ location_dimension as (
 
     -- Add unknown location for handling nulls
     select
-        -1 as location_key,
+        {{ get_unknown_key() }} as location_key,
         -1 as location_id,
         'Unknown' as borough,
         'Unknown' as zone_name,

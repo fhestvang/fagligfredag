@@ -5,3 +5,4 @@ rate_code_id,rate_code_name,rate_category,is_flat_rate
 4,Nassau/Westchester,Negotiated,false
 5,Negotiated Fare,Negotiated,false
 6,Group Ride,Other,false
+99,Other/Unknown,Other,false

@@ -4,9 +4,12 @@
     )
 }}
 
+-- Vendor dimension with hash-based surrogate key
+-- Separates surrogate key from natural key per Kimball methodology
+
 with vendors as (
     select
-        vendor_id as vendor_key,
+        {{ generate_surrogate_key(['vendor_id']) }} as vendor_key,
         vendor_id,
         vendor_name,
         vendor_abbreviation
@@ -16,7 +19,7 @@ with vendors as (
 
     -- Add unknown vendor for handling nulls
     select
-        -1 as vendor_key,
+        {{ get_unknown_key() }} as vendor_key,
         -1 as vendor_id,
         'Unknown' as vendor_name,
         'UNK' as vendor_abbreviation

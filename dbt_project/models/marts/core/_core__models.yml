@@ -9,6 +9,7 @@ models:
     description: >
       Calendar date dimension with day, week, month, quarter, and year attributes.
       Generated date range: 2020-01-01 to 2030-12-31.
+      Uses semantic surrogate key (YYYYMMDD integer format).
     columns:
       - name: date_key
         description: Surrogate key (YYYYMMDD format)
@@ -22,13 +23,21 @@ models:
           - not_null
       - name: day_of_week
         description: Day of week (0=Sunday, 6=Saturday in DuckDB)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]
       - name: is_weekend
         description: True if Saturday or Sunday
+        tests:
+          - not_null
 
   - name: dim_time
     description: >
       Time of day dimension at minute granularity.
       Contains 1440 rows (one per minute in a day).
+      Uses semantic surrogate key (HHMM integer format).
     columns:
       - name: time_key
         description: Surrogate key (HHMM format, e.g., 930 = 09:30)
@@ -37,74 +46,108 @@ models:
           - not_null
       - name: hour_24
         description: Hour in 24-hour format (0-23)
+        tests:
+          - not_null
       - name: time_period
         description: Time period classification (Morning, Afternoon, Evening, Night)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Morning', 'Afternoon', 'Evening', 'Night']
       - name: rush_hour_flag
         description: True if typical rush hour (7-9 AM or 4-7 PM)
+        tests:
+          - not_null
 
   - name: dim_location
     description: >
       Location dimension derived from trip data.
-      Basic ID-based dimension (can be enhanced with TLC zone data).
+      Uses hash-based surrogate key (MD5 of location_id).
+      Can be enhanced with TLC zone data (borough, zone_name, etc.).
     columns:
       - name: location_key
-        description: Surrogate key (equals location_id for simplicity)
+        description: Surrogate key (MD5 hash of location_id, or -1 for unknown)
         tests:
           - unique
           - not_null
       - name: location_id
-        description: NYC TLC location zone ID
+        description: NYC TLC location zone ID (natural key)
         tests:
           - not_null
 
   - name: dim_payment_type
     description: >
       Payment type dimension based on NYC TLC payment codes.
+      Uses hash-based surrogate key (MD5 of payment_type_code).
       Includes revenue-generating flag for financial analysis.
     columns:
       - name: payment_type_key
-        description: Surrogate key
+        description: Surrogate key (MD5 hash of payment_type_code, or -1 for unknown)
         tests:
           - unique
           - not_null
       - name: payment_type_code
-        description: TLC payment type code (1-6)
+        description: TLC payment type code (natural key, 1-6)
+        tests:
+          - not_null
       - name: payment_type_name
         description: Human-readable payment type name
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Credit Card', 'Cash', 'No Charge', 'Dispute', 'Unknown', 'Voided Trip']
+              config:
+                where: "payment_type_key != '-1'"
       - name: is_revenue_generating
         description: True if actual payment received (Credit Card, Cash)
+        tests:
+          - not_null
 
   - name: dim_rate_code
     description: >
       Rate code dimension based on NYC TLC rate codes.
+      Uses hash-based surrogate key (MD5 of rate_code_id).
       Distinguishes standard, airport, and negotiated fares.
     columns:
       - name: rate_code_key
-        description: Surrogate key
+        description: Surrogate key (MD5 hash of rate_code_id, or -1 for unknown)
         tests:
           - unique
           - not_null
       - name: rate_code_id
-        description: TLC rate code ID (1-6)
+        description: TLC rate code ID (natural key, 1-6, 99)
+        tests:
+          - not_null
       - name: rate_code_name
         description: Human-readable rate code name
+        tests:
+          - not_null
       - name: is_flat_rate
         description: True if flat-rate fare (e.g., JFK, Newark)
+        tests:
+          - not_null
 
   - name: dim_vendor
     description: >
       Vendor dimension for taxi technology providers.
+      Uses hash-based surrogate key (MD5 of vendor_id).
       Currently includes CMT and VeriFone.
     columns:
       - name: vendor_key
-        description: Surrogate key
+        description: Surrogate key (MD5 hash of vendor_id, or -1 for unknown)
         tests:
           - unique
           - not_null
       - name: vendor_id
-        description: TLC vendor ID
+        description: TLC vendor ID (natural key)
+        tests:
+          - not_null
       - name: vendor_name
         description: Full vendor name
+        tests:
+          - not_null
 
   # ============================================
   # FACT TABLES
@@ -114,7 +157,7 @@ models:
     description: >
       Atomic fact table containing individual taxi trip records.
       Grain: One row per taxi trip.
-      This is the primary fact table - all aggregates derive from it.
+      All dimension references use surrogate keys via Key Locker pattern.
       Configured for incremental loading.
     columns:
       - name: trip_key
@@ -126,36 +169,115 @@ models:
         description: Natural key from source system
         tests:
           - not_null
+
+      # Date dimension FKs (semantic integer keys)
       - name: pickup_date_key
-        description: FK to dim_date for pickup date
+        description: FK to dim_date for pickup date (YYYYMMDD format)
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
       - name: dropoff_date_key
-        description: FK to dim_date for dropoff date
+        description: FK to dim_date for dropoff date (YYYYMMDD format)
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+      # Time dimension FKs (semantic integer keys)
+      - name: pickup_time_key
+        description: FK to dim_time for pickup time (HHMM format)
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_time')
+                field: time_key
+      - name: dropoff_time_key
+        description: FK to dim_time for dropoff time (HHMM format)
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_time')
+                field: time_key
+
+      # Location dimension FKs (hash-based keys)
       - name: pickup_location_key
-        description: FK to dim_location for pickup
+        description: FK to dim_location for pickup (MD5 hash or -1)
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_key
       - name: dropoff_location_key
-        description: FK to dim_location for dropoff
+        description: FK to dim_location for dropoff (MD5 hash or -1)
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_key
+
+      # Other dimension FKs (hash-based keys)
       - name: payment_type_key
-        description: FK to dim_payment_type
+        description: FK to dim_payment_type (MD5 hash or -1)
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_payment_type')
+                field: payment_type_key
+      - name: rate_code_key
+        description: FK to dim_rate_code (MD5 hash or -1)
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_rate_code')
+                field: rate_code_key
+      - name: vendor_key
+        description: FK to dim_vendor (MD5 hash or -1)
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_vendor')
+                field: vendor_key
+
+      # Additive measures with range validation
       - name: total_amount
         description: Total trip cost (additive fact)
         tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
       - name: trip_distance_miles
         description: Trip distance in miles (additive fact)
         tests:
           - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
       - name: trip_duration_minutes
         description: Calculated trip duration (additive fact)
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+              config:
+                where: "trip_duration_minutes is not null"
+      - name: passenger_count
+        description: Number of passengers
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0 and passenger_count <= 9"
+              config:
+                where: "passenger_count is not null"

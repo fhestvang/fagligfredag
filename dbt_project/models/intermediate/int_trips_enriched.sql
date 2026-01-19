@@ -1,7 +1,7 @@
 -- Intermediate model: Enriched trips with calculated fields and dimension keys
 -- This layer prepares data for the fact table by:
 -- 1. Calculating derived metrics (duration, speed)
--- 2. Generating dimension keys for joins
+-- 2. Generating dimension keys using Key Locker macros
 -- 3. Applying business logic
 
 with staged_trips as (
@@ -16,25 +16,39 @@ enriched as (
         -- Generate surrogate key for fact table
         {{ generate_surrogate_key(['unique_id']) }} as trip_key,
 
-        -- Dimension keys (using natural keys that match dimension tables)
-        -- Date keys (YYYYMMDD format)
-        cast(strftime(pickup_datetime, '%Y%m%d') as integer) as pickup_date_key,
-        cast(strftime(dropoff_datetime, '%Y%m%d') as integer) as dropoff_date_key,
+        -- Date dimension keys (semantic YYYYMMDD format via Key Locker)
+        {{ get_date_key('pickup_datetime') }} as pickup_date_key,
+        {{ get_date_key('dropoff_datetime') }} as dropoff_date_key,
 
-        -- Time keys (HHMM format)
-        cast(strftime(pickup_datetime, '%H') as integer) * 100
-            + cast(strftime(pickup_datetime, '%M') as integer) as pickup_time_key,
-        cast(strftime(dropoff_datetime, '%H') as integer) * 100
-            + cast(strftime(dropoff_datetime, '%M') as integer) as dropoff_time_key,
+        -- Time dimension keys (semantic HHMM format via Key Locker)
+        {{ get_time_key('pickup_datetime') }} as pickup_time_key,
+        {{ get_time_key('dropoff_datetime') }} as dropoff_time_key,
 
-        -- Location keys (using natural key, default -1 for unknown)
-        coalesce(pickup_location_id, -1) as pickup_location_key,
-        coalesce(dropoff_location_id, -1) as dropoff_location_key,
+        -- Location dimension keys (hash-based via Key Locker)
+        -- Cast to integer to ensure consistent hashing with dimension tables
+        case
+            when pickup_location_id is null then {{ get_unknown_key() }}
+            else {{ generate_surrogate_key(['cast(pickup_location_id as integer)']) }}
+        end as pickup_location_key,
+        case
+            when dropoff_location_id is null then {{ get_unknown_key() }}
+            else {{ generate_surrogate_key(['cast(dropoff_location_id as integer)']) }}
+        end as dropoff_location_key,
 
-        -- Other dimension keys
-        coalesce(payment_type, -1) as payment_type_key,
-        coalesce(rate_code_id, -1) as rate_code_key,
-        coalesce(vendor_id, -1) as vendor_key,
+        -- Other dimension keys (hash-based via Key Locker)
+        -- Cast to integer to ensure consistent hashing with dimension tables
+        case
+            when payment_type is null then {{ get_unknown_key() }}
+            else {{ generate_surrogate_key(['cast(payment_type as integer)']) }}
+        end as payment_type_key,
+        case
+            when rate_code_id is null then {{ get_unknown_key() }}
+            else {{ generate_surrogate_key(['cast(rate_code_id as integer)']) }}
+        end as rate_code_key,
+        case
+            when vendor_id is null then {{ get_unknown_key() }}
+            else {{ generate_surrogate_key(['cast(vendor_id as integer)']) }}
+        end as vendor_key,
 
         -- Degenerate dimensions (kept on fact)
         store_and_fwd_flag,
