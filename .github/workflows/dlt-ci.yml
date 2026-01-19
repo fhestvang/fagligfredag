@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dlt[duckdb] pyarrow pandas
+          pip install -e .[dev]
 
       - name: Verify dlt installation
         run: python -c "import dlt; print('dlt version:', dlt.__version__)"
@@ -42,9 +42,7 @@ jobs:
         run: mkdir -p data
 
       - name: Lint Python files
-        run: |
-          pip install ruff
-          ruff check dlt_pipeline/ --ignore E501
+        run: ruff check dlt_pipeline/ --ignore E501
 
       - name: Validate pipeline syntax
         run: |

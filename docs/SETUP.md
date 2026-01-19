@@ -13,7 +13,7 @@ git clone https://github.com/fhestvang/fagligfredag.git
 cd fagligfredag
 
 # Run setup script
-.\setup.ps1
+.\scripts\setup.ps1
 ```
 
 ## Manual Installation
@@ -31,7 +31,7 @@ source .venv/bin/activate
 
 ### 2. Install Dependencies
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 3. Install dbt Packages

@@ -1,7 +1,13 @@
 # NYC Taxi Pipeline Setup Script
-# Run this in PowerShell from the project root
+# Run this in PowerShell from the project root: .\scripts\setup.ps1
+
+# Ensure we're in the project root
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptDir
+Set-Location $projectRoot
 
 Write-Host "Setting up NYC Taxi Data Pipeline..." -ForegroundColor Cyan
+Write-Host "Project root: $projectRoot" -ForegroundColor Gray
 
 # Find Python
 $pythonPath = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
@@ -24,7 +30,7 @@ Write-Host "`n3. Upgrading pip..." -ForegroundColor Yellow
 
 # Install dependencies
 Write-Host "`n4. Installing dependencies..." -ForegroundColor Yellow
-& .\.venv\Scripts\pip.exe install -r requirements.txt
+& .\.venv\Scripts\pip.exe install -e .
 
 # Create data directory
 Write-Host "`n5. Creating data directory..." -ForegroundColor Yellow

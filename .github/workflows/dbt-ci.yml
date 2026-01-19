@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dbt-duckdb dbt-utils
+          pip install -e .
 
       - name: Verify dbt installation
         run: dbt --version
@@ -91,7 +91,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install dbt-duckdb dbt-utils
+          pip install -e .
 
       - name: Create data directory
         run: mkdir -p data
