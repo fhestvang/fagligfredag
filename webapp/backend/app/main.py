@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import CORS_ORIGINS
-from app.routers import data, pipeline, dbt, websocket
+from app.routers import source, data, dag, diff, impact, pipeline, dbt, websocket
 
 app = FastAPI(
-    title="NYC Taxi Pipeline Manager",
-    description="API for managing dlt/dbt pipelines with real-time updates",
-    version="1.0.0"
+    title="dbt Demo Platform",
+    description="Interactive platform for demonstrating dbt concepts - source editing, DAG visualization, and impact analysis",
+    version="2.0.0"
 )
 
 # CORS middleware
@@ -20,7 +20,11 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(source.router, prefix="/api/source", tags=["Source"])
 app.include_router(data.router, prefix="/api/data", tags=["Data"])
+app.include_router(dag.router, prefix="/api/dag", tags=["DAG"])
+app.include_router(diff.router, prefix="/api/diff", tags=["Diff"])
+app.include_router(impact.router, prefix="/api/impact", tags=["Impact"])
 app.include_router(pipeline.router, prefix="/api/pipeline", tags=["Pipeline"])
 app.include_router(dbt.router, prefix="/api/dbt", tags=["dbt"])
 app.include_router(websocket.router, tags=["WebSocket"])

@@ -1,0 +1,5 @@
+{
+  "primary_key": "unique_id",
+  "last_modified": "2026-01-19T15:54:49.914456",
+  "source": "nyc_taxi_raw.trips"
+}

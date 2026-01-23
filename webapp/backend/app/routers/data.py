@@ -19,6 +19,25 @@ async def list_schemas():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/tables")
+async def list_all_tables():
+    """List all tables across all schemas."""
+    try:
+        schemas = db_service.list_schemas()
+        all_tables = []
+        for schema in schemas:
+            tables = db_service.list_tables(schema)
+            for table in tables:
+                all_tables.append({
+                    "name": f"{schema}.{table.name}",
+                    "schema": schema,
+                    "row_count": table.row_count or 0,
+                })
+        return all_tables
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/tables/{schema}", response_model=list[TableInfo])
 async def list_tables(schema: str):
     """List all tables in a schema."""
@@ -39,15 +58,23 @@ async def get_table_schema(schema: str, table: str):
 
 @router.get("/query", response_model=QueryResult)
 async def query_table(
-    schema: str = Query(..., description="Schema name"),
-    table: str = Query(..., description="Table name"),
+    schema: Optional[str] = Query(None, description="Schema name"),
+    table: str = Query(..., description="Table name (can include schema as schema.table)"),
     limit: int = Query(100, ge=1, le=1000, description="Number of rows to return"),
     offset: int = Query(0, ge=0, description="Number of rows to skip"),
     order_by: Optional[str] = Query(None, description="Column to order by"),
-    order_dir: str = Query("asc", regex="^(asc|desc)$", description="Order direction"),
+    order_dir: str = Query("asc", pattern="^(asc|desc)$", description="Order direction"),
 ):
     """Query table data with pagination."""
     try:
+        # Handle schema.table format
+        if schema is None and '.' in table:
+            parts = table.split('.', 1)
+            schema = parts[0]
+            table = parts[1]
+        elif schema is None:
+            schema = "main"
+
         return db_service.query_table(
             schema=schema,
             table=table,

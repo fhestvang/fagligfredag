@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
-import { Sidebar } from "@/components/layout/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NYC Taxi Pipeline Manager",
-  description: "Manage and monitor dlt/dbt data pipelines",
+  title: "dbt Demo Platform",
+  description: "Interactive platform for demonstrating dbt concepts",
 };
 
 export default function RootLayout({
@@ -30,11 +29,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <div className="flex h-screen bg-gray-100">
-            <Sidebar />
-            <main className="flex-1 overflow-auto p-6">
-              {children}
-            </main>
+          <div className="h-screen bg-gray-100">
+            {children}
           </div>
         </Providers>
       </body>

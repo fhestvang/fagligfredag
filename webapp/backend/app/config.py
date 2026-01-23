@@ -7,8 +7,12 @@ load_dotenv()
 # Project root (fagligfredag-agent1/)
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.resolve()
 
+# Data directory
+DATA_DIR = PROJECT_ROOT / "data"
+
 # Database path
-DUCKDB_PATH = os.getenv("DUCKDB_PATH", str(PROJECT_ROOT / "data" / "nyc_taxi.duckdb"))
+DATABASE_PATH = DATA_DIR / "nyc_taxi.duckdb"
+DUCKDB_PATH = os.getenv("DUCKDB_PATH", str(DATABASE_PATH))
 
 # dlt pipeline path
 DLT_PIPELINE_PATH = PROJECT_ROOT / "dlt_pipeline"
